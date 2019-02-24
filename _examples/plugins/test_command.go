@@ -1,7 +1,7 @@
 package main
 
 import (
-	"trellis-cli/trellis"
+	"github.com/roots/trellis-cli/trellis"
 
 	"github.com/mitchellh/cli"
 )

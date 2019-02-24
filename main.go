@@ -9,8 +9,8 @@ import (
 	"plugin"
 	"sort"
 	"strings"
-	"trellis-cli/cmd"
-	"trellis-cli/trellis"
+	"github.com/roots/trellis-cli/cmd"
+	"github.com/roots/trellis-cli/trellis"
 
 	"github.com/mitchellh/cli"
 	"github.com/mitchellh/go-homedir"
