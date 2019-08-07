@@ -18,6 +18,14 @@ type DotEnvCommand struct {
 	Trellis *trellis.Trellis
 }
 
+func deletePlaybook(path string) {
+	err := os.Remove(path)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func (c *DotEnvCommand) Run(args []string) int {
 	if err := c.Trellis.LoadProject(); err != nil {
 		c.UI.Error(err.Error())
@@ -57,6 +65,7 @@ func (c *DotEnvCommand) Run(args []string) int {
 	if writeFileErr != nil {
 		log.Fatal(writeFileErr)
 	}
+	defer deletePlaybook(playbookPath)
 
 	dotEnv := execCommand("ansible-playbook", "dotenv.yml", "-e", "env=" + environment)
 
@@ -70,15 +79,9 @@ func (c *DotEnvCommand) Run(args []string) int {
 	logCmd(dotEnv, c.UI, true)
 	runErr := dotEnv.Run()
 
-	// Remove playbook file no matter command success or not
-	removeFileErr := os.Remove(playbookPath)
-
 	// runErr gets priority because it is more important than removeFileErr
 	if runErr != nil {
 		log.Fatal(runErr)
-	}
-	if removeFileErr != nil {
-		log.Fatal(removeFileErr)
 	}
 
 	return 0
