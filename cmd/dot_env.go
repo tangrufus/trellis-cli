@@ -81,6 +81,7 @@ func (c *DotEnvCommand) Run(args []string) int {
 
 	if runErr != nil {
 		c.UI.Error(fmt.Sprintf("Error running ansible-playbook: %s", runErr))
+		return 1
 	}
 
 	return 0
