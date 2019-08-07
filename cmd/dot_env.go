@@ -79,9 +79,8 @@ func (c *DotEnvCommand) Run(args []string) int {
 	logCmd(dotEnv, c.UI, true)
 	runErr := dotEnv.Run()
 
-	// runErr gets priority because it is more important than removeFileErr
 	if runErr != nil {
-		log.Fatal(runErr)
+		c.UI.Error(fmt.Sprintf("Error running ansible-playbook: %s", runErr))
 	}
 
 	return 0
