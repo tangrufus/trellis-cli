@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"path"
 	"runtime"
 	"strings"
@@ -18,12 +19,33 @@ type DotEnvCommand struct {
 	Trellis *trellis.Trellis
 }
 
+func copyPlaybook(source string, destination string) {
+	b, readFileErr := ioutil.ReadFile(source)
+	if readFileErr != nil {
+		log.Fatal(readFileErr)
+	}
+
+	writeFileErr := ioutil.WriteFile(destination, b, 0644)
+	if writeFileErr != nil {
+		log.Fatal(writeFileErr)
+	}
+}
+
 func deletePlaybook(path string) {
 	err := os.Remove(path)
 
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func appendEnvironmentVariable(cmd *exec.Cmd, elem string) {
+	env := os.Environ()
+	// To allow mockExecCommand injects its environment variables
+	if cmd.Env != nil {
+		env = cmd.Env
+	}
+	cmd.Env = append(env, elem)
 }
 
 func (c *DotEnvCommand) Run(args []string) int {
@@ -54,27 +76,12 @@ func (c *DotEnvCommand) Run(args []string) int {
 	// Copy playbook file from package to Trellis
 	_, filename, _, ok := runtime.Caller(0)
 	playbookTemplatePath := path.Join(path.Dir(filename), "../playbooks/dotenv.yml")
-
-	b, readFileErr := ioutil.ReadFile(playbookTemplatePath)
-	if readFileErr != nil {
-		log.Fatal(readFileErr)
-	}
-
 	playbookPath := "dotenv.yml"
-	writeFileErr := ioutil.WriteFile(playbookPath, b, 0644)
-	if writeFileErr != nil {
-		log.Fatal(writeFileErr)
-	}
+	copyPlaybook(playbookTemplatePath, playbookPath)
 	defer deletePlaybook(playbookPath)
 
 	dotEnv := execCommand("ansible-playbook", "dotenv.yml", "-e", "env=" + environment)
-
-	env := os.Environ()
-	// To allow mockExecCommand injects its environment variables
-	if dotEnv.Env != nil {
-		env = dotEnv.Env
-	}
-	dotEnv.Env = append(env, "ANSIBLE_RETRY_FILES_ENABLED=false")
+	appendEnvironmentVariable(dotEnv, "ANSIBLE_RETRY_FILES_ENABLED=false")
 
 	logCmd(dotEnv, c.UI, true)
 	runErr := dotEnv.Run()
