@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"io/ioutil"
+	"os"
 	"os/exec"
 	"strings"
 	"testing"
@@ -137,5 +139,42 @@ func TestDotEnvRun(t *testing.T) {
 		if code != tc.code {
 			t.Errorf("expected code %d to be %d", code, tc.code)
 		}
+	}
+}
+
+func removeSiteDotEnv() {
+	os.Remove("testdata/site/.env")
+}
+
+func TestIntegrationDotEnv(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping integration test")
+	}
+
+	bin := os.Getenv("TEST_BINARY")
+	if bin == "" {
+		t.Error("TEST_BINARY not supplied")
+	}
+
+	dotEnv := exec.Command(bin, "dotenv")
+	dotEnv.Dir = "testdata/trellis"
+
+	removeSiteDotEnv()
+	defer removeSiteDotEnv()
+
+	dotEnv.Run()
+
+	if _, err := os.Stat("testdata/site/.env"); os.IsNotExist(err) {
+		t.Error(".env file not generated")
+	}
+
+	actualByte, _ := ioutil.ReadFile("./testdata/site/.env")
+	actual := string(actualByte)
+
+	expectedByte, _ := ioutil.ReadFile("./testdata/expected/dot_env/.env")
+	expected := string(expectedByte)
+
+	if actual != expected {
+		t.Errorf("expected .env file \n%s to be \n%s", actual, expected)
 	}
 }
