@@ -18,39 +18,25 @@ jobs:
 
   integration-test:
     docker:
-      - image: circleci/golang:1.12
-    environment:
-      TEST_BINARY: /home/circleci/project/trellis-cli
+      # TODO: Use `rootsdev/trellis-cli-dev`
+      - image: tangrufus/trellis-cli-dev
     steps:
       - run: go version
-      - run: sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6125E2A8C77F2818FB7BD15B93C4A3FD7BB9C367
-      - run: echo "deb http://ppa.launchpad.net/ansible/ansible-2.7/ubuntu bionic main " | sudo tee -a /etc/apt/sources.list
-      - run: sudo apt-get install --yes --no-install-recommends ansible
       - run: ansible --version
-      - checkout
-      - run: git submodule sync
-      - run: git submodule update --init
-      - restore_cache:
-          keys:
-            - ansible-v1-{{ checksum "cmd/testdata/trellis/requirements.yml" }}
       - run:
-          name: Install Galaxy roles
-          command: ansible-galaxy install -r requirements.yml
-          working_directory: cmd/testdata/trellis
-      - save_cache:
-          key: ansible-v1-{{ checksum "cmd/testdata/trellis/requirements.yml" }}
-          paths:
-            - venv
-            - cmd/testdata/trellis/vendor
+          name: Trellis version
+          command: git log -1 --format="%h %s %aD"
+          working_directory: /test/dummy/trellis
       - restore_cache:
           keys:
             - go-mod-v1-{{ checksum "go.sum" }}
-      - run: go build
-      - run: go test -v ./...
+      - run: make test RUN=
       - save_cache:
           key: go-mod-v1-{{ checksum "go.sum" }}
           paths:
             - /go/pkg/mod
+      - store_artifacts:
+          path: /test/trellis-cli
 
   release:
     docker:

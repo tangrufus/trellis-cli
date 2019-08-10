@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path"
 	"strings"
 	"testing"
 
@@ -142,10 +143,6 @@ func TestDotEnvRun(t *testing.T) {
 	}
 }
 
-func removeSiteDotEnv() {
-	os.Remove("testdata/site/.env")
-}
-
 func TestIntegrationDotEnv(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping integration test")
@@ -155,20 +152,30 @@ func TestIntegrationDotEnv(t *testing.T) {
 	if bin == "" {
 		t.Error("TEST_BINARY not supplied")
 	}
+	if _, err := os.Stat(bin); os.IsNotExist(err) {
+		t.Error(bin + "not exist")
+	}
+
+	dummy := os.Getenv("TEST_DUMMY")
+	if dummy == "" {
+		t.Error("TEST_DUMMY not supplied")
+	}
+
+	actualPath := path.Join(dummy, "site/.env")
+
+	os.Remove(actualPath)
+	defer os.Remove(actualPath)
 
 	dotEnv := exec.Command(bin, "dotenv")
-	dotEnv.Dir = "testdata/trellis"
-
-	removeSiteDotEnv()
-	defer removeSiteDotEnv()
+	dotEnv.Dir = path.Join(dummy, "trellis")
 
 	dotEnv.Run()
 
-	if _, err := os.Stat("testdata/site/.env"); os.IsNotExist(err) {
+	if _, err := os.Stat(actualPath); os.IsNotExist(err) {
 		t.Error(".env file not generated")
 	}
 
-	actualByte, _ := ioutil.ReadFile("./testdata/site/.env")
+	actualByte, _ := ioutil.ReadFile(actualPath)
 	actual := string(actualByte)
 
 	expectedByte, _ := ioutil.ReadFile("./testdata/expected/dot_env/.env")

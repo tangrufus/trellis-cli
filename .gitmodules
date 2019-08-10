@@ -1,6 +1,0 @@
-[submodule "cmd/testdata/site"]
-	path = cmd/testdata/site
-	url = https://github.com/roots/bedrock
-[submodule "cmd/testdata/trellis"]
-	path = cmd/testdata/trellis
-	url = https://github.com/roots/trellis
