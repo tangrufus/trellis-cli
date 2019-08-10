@@ -27,7 +27,7 @@ jobs:
           name: Trellis version
           command: git log -1 --format="%h %s %aD"
           working_directory: /test/dummy/trellis
-      - run: checkout
+      - checkout
       - restore_cache:
           keys:
             - go-mod-v1-{{ checksum "go.sum" }}
