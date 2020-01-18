@@ -56,6 +56,8 @@ func (c *InitCommand) Run(args []string) int {
 
 	pip := execCommand("pip", "install", "-r", "requirements.txt")
 
+	logCmd(pip, c.UI, true)
+
 	s := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
 	s.Suffix = " Installing pip dependencies (pip install -r requirements.txt) ..."
 	s.FinalMSG = "✓ Dependencies installed\n"
