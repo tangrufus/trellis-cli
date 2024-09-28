@@ -76,6 +76,10 @@ setup after downloading the Windows build:
 4. Edit path from system variables and add new named `%TRELLIS%`
 5. Save the changes
 
+## Attest
+
+TODO!
+
 ## Shell Integration
 
 ### Autocompletes
