@@ -6,6 +6,8 @@ on:
       - '*'
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
@@ -25,7 +27,9 @@ jobs:
           version: '~> v2'
           args: release
         env:
-          GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # TODO: Restore!
+          # GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_ACCESS_TOKEN }}
       - uses: actions/upload-artifact@v4
         id: upload-build-provenance
         with:
@@ -37,7 +41,6 @@ jobs:
             dist/**/*.sbom.json
       - uses: typisttech/upload-goreleaser-sboms-action@v0
         id: upload-sbom
-
 
   attest-build-provenance:
     needs: [goreleaser]
