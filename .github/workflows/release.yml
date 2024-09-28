@@ -36,6 +36,7 @@ jobs:
           name: build-provenance
           path: |
             dist/trellis_*/trellis
+            dist/trellis_*/trellis.exe
             dist/trellis_*.tar.gz
             dist/trellis_*.zip
             dist/**/*.sbom.json
@@ -57,6 +58,7 @@ jobs:
         with:
           subject-path: |
             dist/trellis_*/trellis
+            dist/trellis_*/trellis.exe
             dist/trellis_*.tar.gz
             dist/trellis_*.zip
             dist/**/*.sbom.json
