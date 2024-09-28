@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      build-provenance-artifact-id: ${{ steps.upload-build-provenance.outputs.artifact-id }}
+      sbom-artifact-id: ${{ steps.upload-sbom.outputs.artifact-id }}
+      sbom-attestations: ${{ steps.upload-sbom.outputs.attestations }}
     steps:
       - uses: actions/checkout@v4
         with:
