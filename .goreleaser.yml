@@ -29,22 +29,24 @@ archives:
       format: zip
 checksum:
   name_template: '{{ .ProjectName }}_checksums.txt'
+sboms:
+  - artifacts: archive
 changelog:
   sort: asc
   filters:
     exclude:
     - '^docs:'
     - '^test:'
-brews:
-  - name: trellis-cli
-    repository:
-      owner: roots
-      name: homebrew-tap
-    directory: Formula
-    homepage:  https://roots.io/trellis
-    description: A CLI to manage Trellis projects
-    install: |
-      bin.install "trellis"
-    test: |
-      system "#{bin}/trellis --autocomplete-install"
-      system "#{bin}/trellis -v"
+# brews:
+#   - name: trellis-cli
+#     repository:
+#       owner: roots
+#       name: homebrew-tap
+#     directory: Formula
+#     homepage:  https://roots.io/trellis
+#     description: A CLI to manage Trellis projects
+#     install: |
+#       bin.install "trellis"
+#     test: |
+#       system "#{bin}/trellis --autocomplete-install"
+#       system "#{bin}/trellis -v"
