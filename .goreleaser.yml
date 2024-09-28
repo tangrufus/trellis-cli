@@ -37,18 +37,16 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
-# TODO: Restore!
-#
-# brews:
-#   - name: trellis-cli
-#     repository:
-#       owner: roots
-#       name: homebrew-tap
-#     directory: Formula
-#     homepage:  https://roots.io/trellis
-#     description: A CLI to manage Trellis projects
-#     install: |
-#       bin.install "trellis"
-#     test: |
-#       system "#{bin}/trellis --autocomplete-install"
-#       system "#{bin}/trellis -v"
+brews:
+  - name: trellis-cli
+    repository:
+      owner: roots
+      name: homebrew-tap
+    directory: Formula
+    homepage:  https://roots.io/trellis
+    description: A CLI to manage Trellis projects
+    install: |
+      bin.install "trellis"
+    test: |
+      system "#{bin}/trellis --autocomplete-install"
+      system "#{bin}/trellis -v"
