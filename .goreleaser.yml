@@ -64,10 +64,10 @@ homebrew_casks:
           if OS.mac?
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/trellis"]
           end
-          system bin/"trellis", "--autocomplete-install"
+          system_command "#{staged_path}/trellis", "--autocomplete-install"
       pre:
         uninstall: |
-          system bin/"trellis", "--autocomplete-uninstall"
+          system_command "#{staged_path}/trellis", "--autocomplete-uninstall"
     repository:
       owner: tangrufus
       name: homebrew-tap
