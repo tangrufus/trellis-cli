@@ -37,16 +37,21 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
-brews:
+
+homebrew_casks:
   - name: trellis-cli
-    repository:
-      owner: roots
-      name: homebrew-tap
-    directory: Formula
-    homepage:  https://roots.io/trellis
+    homepage: https://roots.io/trellis
     description: A CLI to manage Trellis projects
-    install: |
-      bin.install "trellis"
-    test: |
-      system "#{bin}/trellis --autocomplete-install"
-      system "#{bin}/trellis -v"
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/trellis"]
+          end
+          system_command "#{staged_path}/trellis", args: ["--autocomplete-install"]
+      pre:
+        uninstall: |
+          system_command "#{staged_path}/trellis", args: ["--autocomplete-uninstall"]
+    repository:
+      owner: tangrufus
+      name: homebrew-tap
