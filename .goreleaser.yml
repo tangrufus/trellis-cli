@@ -37,15 +37,13 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
-
 homebrew_casks:
   - name: trellis-cli
     homepage: https://roots.io/trellis
     description: A CLI to manage Trellis projects
     caveats: |-
-      trellis-cli uses [Virtualenv](https://virtualenv.pypa.io) to manage dependencies
-      such as Ansible which it automatically activates and uses when running any 
-      `trellis` command.
+      trellis-cli uses Virtualenv to manage dependencies such as Ansible which it 
+      automatically activates and uses when running any `trellis` command.
       But there's still a lot of times you may want to run `ansible-playbook` or `pip`
       manually in your shell. To make this experience seamless, trellis-cli offers 
       shell integration which automatically activates the Virtualenv when you enter a
@@ -58,7 +56,6 @@ homebrew_casks:
 
       Zsh (`~/.zshrc`):
           eval "$(trellis shell-init zsh)"
-
     binaries:
       - trellis
     hooks:
@@ -67,10 +64,10 @@ homebrew_casks:
           if OS.mac?
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/trellis"]
           end
-          system_command "#{staged_path}/trellis", args: ["--autocomplete-install"]
+          system_command "trellis", args: ["--autocomplete-install"]
       pre:
         uninstall: |
-          system_command "#{staged_path}/trellis", args: ["--autocomplete-uninstall"]
+          system_command "trellis", args: ["--autocomplete-uninstall"]
     repository:
       owner: tangrufus
       name: homebrew-tap
